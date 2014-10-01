@@ -3,7 +3,7 @@
 // Native module(s)
 var fs   = require('fs');
 var os   = require('os');
-var path = require ('path');
+var path = require('path');
 
 // npm module(s)
 var Bottle     = require('bottlejs');
@@ -22,8 +22,6 @@ var packages = [
     'php5-mysql',
     'git'
 ];
-
-// var config = require('./server.json');
 
 var paths = {
     config: './config'
