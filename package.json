@@ -1,0 +1,18 @@
+{
+  "name": "flight-controller",
+  "version": "0.0.0",
+  "description": "Remote server configuration and messaging lib for Node.js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James Benner <james.benner@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ssh2": "^0.3.6"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "jshint-stylish": "^1.0.0"
+  }
+}
