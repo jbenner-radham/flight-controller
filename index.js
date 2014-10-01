@@ -1,12 +1,18 @@
+'use strict';
+
 // Native module(s)
-var fs = require('fs');
-var os = require('os');
+var fs   = require('fs');
+var os   = require('os');
+var path = require ('path');
 
 // npm module(s)
+var Bottle     = require('bottlejs');
 var Connection = require('ssh2');
 
-var conn = new Connection();
+var bottle = new Bottle();
+var conn   = new Connection();
 
+// Packages we'll be installing via "apt-get"
 var packages = [
     'apache2',
     'apache2-mpm-worker',
@@ -23,24 +29,33 @@ var paths = {
     config: './config'
 };
 
-paths.targetsConfig = paths.config + '/targets'
+paths.targetsConfig = paths.config + '/targets';
 
-var files = fs.readdirSync(paths.targetsConfig);
-var targets = [];
+var targets = fs.readdirSync(paths.targetsConfig)
 
-files.map(function (file) {
-    targets.push(require(paths.targetsConfig + '/' + file));
-});
+    // Get a list of JSON files
+    .filter(function (file) {
+        return path.extname(file) === '.json';
+    })
 
-console.log(files);
+    // Return an array of the JSON objects
+    .map(function (file) {
+        return require(paths.targetsConfig + '/' + file);
+    });
+
 console.log(targets);
 
+return;
+
+/**
+ * The code below won't work unless you provide a valid target config object!
+ */
 conn.on('ready', function () {
     console.log('Connection :: ready');
     conn.exec('ls', function(err, stream) {
         if (err) throw err;
         stream.on('exit', function(code, signal) {
-            var signal = signal || '[NO SIGNAL]';
+            signal = signal || '[NO SIGNAL]';
             console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
         }).on('close', function() {
             console.log('Stream :: close');

@@ -9,10 +9,18 @@
   "author": "James Benner <james.benner@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "apache-server-configs": "^2.8.0",
+    "bottlejs": "^0.4.1",
     "ssh2": "^0.3.6"
   },
   "devDependencies": {
     "gulp": "^3.8.8",
-    "jshint-stylish": "^1.0.0"
+    "gulp-jshint": "^1.8.5",
+    "gulp-load-plugins": "^0.7.0",
+    "gulp-mocha": "^1.1.0",
+    "gulp-plumber": "^0.6.5",
+    "gulp-util": "^3.0.1",
+    "jshint-stylish": "^1.0.0",
+    "lazypipe": "^0.2.2"
   }
 }
