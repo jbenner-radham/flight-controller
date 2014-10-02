@@ -43,11 +43,11 @@ var targets = fs.readdirSync(paths.targetsConfig)
         return require(paths.targetsConfig + '/' + file);
     });
 
-console.log('[TARGETS]', os.EOL, targets, os.EOL);
+console.log('[TARGETS]', EOL, targets, EOL);
 
 var target = targets.shift();
 
-console.log('[TARGET]', os.EOL, target, os.EOL);
+console.log('[TARGET]', EOL, target, EOL);
 
 var queue = ['ls', 'ls -la', 'ls -lh'];
 
@@ -87,11 +87,12 @@ conn.on('ready', function () {
                     console.log('Triggering callback.');
                     cb();
                 }
-                console.log(os.EOL);
+
+                console.log(EOL);
             }).on('data', function(data) {
-                console.log('STDOUT: ' + os.EOL + data);
+                console.log('STDOUT: ' + EOL + data);
             }).stderr.on('data', function(data) {
-                console.log('STDERR: ' + os.EOL  + data);
+                console.log('STDERR: ' + EOL  + data);
             });
         });
     }).bind(this);
