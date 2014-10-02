@@ -12,7 +12,9 @@ var Connection = require('ssh2');
 var bottle = new Bottle();
 var conn   = new Connection();
 
-// Packages we'll be installing via "apt-get"
+const EOL = os.EOL;
+
+// Packages we'll (eventually) be installing via `apt-get`
 var packages = [
     'apache2',
     'apache2-mpm-worker',
@@ -41,32 +43,63 @@ var targets = fs.readdirSync(paths.targetsConfig)
         return require(paths.targetsConfig + '/' + file);
     });
 
-console.log(targets);
+console.log('[TARGETS]', os.EOL, targets, os.EOL);
 
-return;
+var target = targets.shift();
+
+console.log('[TARGET]', os.EOL, target, os.EOL);
+
+var queue = ['ls', 'ls -la', 'ls -lh'];
+
+///// return;
 
 /**
  * The code below won't work unless you provide a valid target config object!
+ * e.g.
+ *
+ * ```js
+ * {
+ *     "host": "domain.com",
+ *     "post": 22,
+ *     "username": "example-user",
+ *     "password": "super-secret-password"
+ * }
+ * ```
  */
 conn.on('ready', function () {
     console.log('Connection :: ready');
-    conn.exec('ls', function(err, stream) {
-        if (err) throw err;
-        stream.on('exit', function(code, signal) {
-            signal = signal || '[NO SIGNAL]';
-            console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
-        }).on('close', function() {
-            console.log('Stream :: close');
-            conn.end();
-        }).on('data', function(data) {
-            console.log('STDOUT: ' + os.EOL + data);
-        }).stderr.on('data', function(data) {
-            console.log('STDERR: ' + os.EOL  + data);
+
+    var cb = (function () {
+        console.log('Executing `' + cmd + '`')
+        conn.exec(cmd, function(err, stream) {
+            if (err) throw err;
+            stream.on('exit', function(code, signal) {
+                signal = signal || '[NO SIGNAL]';
+                console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
+            }).on('close', function() {
+                cmd = queue.shift();
+                console.log('Stream :: close');
+
+                if (!cmd) {
+                    console.log('Ending connection now.');
+                    conn.end();
+                } else {
+                    console.log('Triggering callback.');
+                    cb();
+                }
+                console.log(os.EOL);
+            }).on('data', function(data) {
+                console.log('STDOUT: ' + os.EOL + data);
+            }).stderr.on('data', function(data) {
+                console.log('STDERR: ' + os.EOL  + data);
+            });
         });
-    });
-}).connect({
-    host: '',
-    post: 22,
-    username: '',
-    password: ''
-});
+    }).bind(this);
+
+    var cmd = queue.shift();
+
+    if (!cmd) return;
+
+    cb();
+})
+.connect(target);
