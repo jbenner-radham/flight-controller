@@ -13,3 +13,15 @@ gulp.task('jshint', function () {
         .pipe($.jshint())
         .pipe($.jshint.reporter('jshint-stylish'));
 });
+
+gulp.task('build', function () {
+    ///// $.util.log(process.cwd());
+    gulp.src('src/*.js')
+
+        // Compile ES6/Harmony code into ES5.
+        .pipe($.esnext())
+
+        // Convert any double quotes into single quotes for strings.
+        .pipe($.esformatter())
+        .pipe(gulp.dest('dist'));
+});

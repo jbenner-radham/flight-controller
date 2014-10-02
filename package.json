@@ -4,7 +4,7 @@
   "description": "Remote server configuration and messaging lib for Node.js.",
   "main": "index.js",
   "scripts": {
-    "start": "node --harmony index.js",
+    "start": "node --harmony dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "James Benner <james.benner@gmail.com>",
@@ -12,10 +12,14 @@
   "dependencies": {
     "apache-server-configs": "^2.8.0",
     "bottlejs": "^0.4.1",
+    "fs-extra": "^0.12.0",
     "ssh2": "^0.3.6"
   },
   "devDependencies": {
+    "esformatter-quotes": "^1.0.0",
     "gulp": "^3.8.8",
+    "gulp-esformatter": "^1.0.0",
+    "gulp-esnext": "^1.2.0",
     "gulp-jshint": "^1.8.5",
     "gulp-load-plugins": "^0.7.0",
     "gulp-mocha": "^1.1.0",

@@ -1,11 +1,11 @@
 'use strict';
 
 // Native module(s)
-var fs   = require('fs');
 var os   = require('os');
 var path = require('path');
 
 // npm module(s)
+var fs         = require('fs-extra');
 var Bottle     = require('bottlejs');
 var Connection = require('ssh2');
 
@@ -26,22 +26,26 @@ var packages = [
 ];
 
 var paths = {
-    config: './config'
+    config: './config',
+    dist: './dist',
+    src: './src'
 };
 
-paths.targetsConfig = paths.config + '/targets';
+///// paths.targetsConfig = `${path.relative(process.cwd(), paths.config)}/targets`;
+paths.targetsConfig = `${paths.config}/targets`;
 
-var targets = fs.readdirSync(paths.targetsConfig)
+try {
+    var targets = fs.readdirSync(paths.targetsConfig)
 
-    // Get a list of JSON files
-    .filter(function (file) {
-        return path.extname(file) === '.json';
-    })
+        // Get a list of JSON files
+        .filter(file => path.extname(file) === '.json')
 
-    // Return an array of the JSON objects
-    .map(function (file) {
-        return require(paths.targetsConfig + '/' + file);
-    });
+        // Return an array of the JSON objects
+    .map(file => fs.readJsonSync(`${paths.config}/targets/${file}`));
+} catch (e) {
+    console.log('Error: ', e);
+    process.exit(1);
+}
 
 console.log('[TARGETS]', EOL, targets, EOL);
 
@@ -70,7 +74,7 @@ conn.on('ready', function () {
     console.log('Connection :: ready');
 
     var cb = (function () {
-        console.log('Executing `' + cmd + '`')
+        console.log(`Executing: \`${cmd}\``);
         conn.exec(cmd, function(err, stream) {
             if (err) throw err;
             stream.on('exit', function(code, signal) {
@@ -90,9 +94,9 @@ conn.on('ready', function () {
 
                 console.log(EOL);
             }).on('data', function(data) {
-                console.log('STDOUT: ' + EOL + data);
+                console.log('[STDOUT]' + EOL + data);
             }).stderr.on('data', function(data) {
-                console.log('STDERR: ' + EOL  + data);
+                console.log('[STDERR]' + EOL  + data);
             });
         });
     }).bind(this);
