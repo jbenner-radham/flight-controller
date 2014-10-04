@@ -16,7 +16,7 @@ gulp.task('jshint', function () {
 
 gulp.task('build', function () {
     ///// $.util.log(process.cwd());
-    gulp.src('src/*.js')
+    gulp.src('src/**/*.js')
 
         // Compile ES6/Harmony code into ES5.
         .pipe($.esnext())

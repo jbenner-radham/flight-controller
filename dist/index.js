@@ -54,12 +54,11 @@ try {
 console.log('[TARGETS]', EOL, targets, EOL);
 
 var target = targets.shift();
+///// var target = targets[1];
 
 console.log('[TARGET]', EOL, target, EOL);
 
-var queue = ['ls', 'ls -la', 'ls -lh'];
-
-///// return;
+var queue = ['ls', 'ls -la', 'ls -lh']; // `apt-get --yes upgrade`
 
 /**
  * The code below won't work unless you provide a valid target config object!
@@ -74,42 +73,12 @@ var queue = ['ls', 'ls -la', 'ls -lh'];
  * }
  * ```
  */
-conn.on('ready', function() {
-  console.log('Connection :: ready');
 
-  var cb = (function() {
-    console.log('Executing: `' + cmd + '`');
-    conn.exec(cmd, function(err, stream) {
-      if (err)
-        throw err;
-      stream.on('exit', function(code, signal) {
-        signal = signal || '[NO SIGNAL]';
-        console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
-      }).on('close', function() {
-        cmd = queue.shift();
-        console.log('Stream :: close');
+//conn.on('ready', () => {
+//    console.log('Connection :: ready');
+//    require('./lib/flight-callback')(conn, queue);
+//}).connect(target);
 
-        if (!cmd) {
-          console.log('Ending connection now.');
-          conn.end();
-        } else {
-          console.log('Triggering callback.');
-          cb();
-        }
+var cb = require('./lib/flight-callback').bind(undefined, conn, queue);
 
-        console.log(EOL);
-      }).on('data', function(data) {
-        console.log('[STDOUT]' + EOL + data);
-      }).stderr.on('data', function(data) {
-        console.log('[STDERR]' + EOL + data);
-      });
-    });
-  }).bind(this);
-
-  var cmd = queue.shift();
-
-  if (!cmd) return;
-
-  cb();
-})
-  .connect(target);
+conn.on('ready', cb).connect(target);
