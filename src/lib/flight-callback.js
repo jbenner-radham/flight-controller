@@ -3,11 +3,13 @@
 module.exports = (conn, queue) => {
     const EOL = require('os').EOL;
 
+    var util = require('util');
+
     console.log('[SSH Ready]', EOL);
 
     var cb = (() => {
         conn.exec(cmd, (err, stream) => {
-            console.log(`Executing: \`${cmd}\``);
+            console.log(util.format('Executing: `%s`', cmd));
 
             if (err) {
                 throw err;
@@ -29,8 +31,11 @@ module.exports = (conn, queue) => {
                 }
 
                 console.log(EOL);
-            }).on('data', data => console.log('[STDOUT]' + EOL + data)
-            ).stderr.on('data', data => console.log('[STDERR]' + EOL  + data));
+            }).on('data', data => {
+                console.log('[STDOUT]' + EOL + data);
+            }).stderr.on('data', data => {
+                console.log('[STDERR]' + EOL  + data);
+            });
         });
     }).bind(this);
 
