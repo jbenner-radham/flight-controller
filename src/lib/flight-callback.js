@@ -9,7 +9,9 @@ module.exports = (conn, queue) => {
         conn.exec(cmd, (err, stream) => {
             console.log(`Executing: \`${cmd}\``);
 
-            if (err) throw err;
+            if (err) {
+                throw err;
+            }
 
             stream.on('exit', (code, signal) => {
                 signal = signal || '[NO SIGNAL]';
@@ -27,14 +29,16 @@ module.exports = (conn, queue) => {
                 }
 
                 console.log(EOL);
-            }).on('data', data => console.log('[STDOUT]' + EOL + data))
-                .stderr.on('data', data => console.log('[STDERR]' + EOL  + data));
+            }).on('data', data => console.log('[STDOUT]' + EOL + data)
+            ).stderr.on('data', data => console.log('[STDERR]' + EOL  + data));
         });
     }).bind(this);
 
     var cmd = queue.shift();
 
-    if (!cmd) return;
+    if (!cmd) {
+        return;
+    }
 
     cb();
 };

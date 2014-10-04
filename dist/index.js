@@ -16,39 +16,39 @@ const EOL = os.EOL;
 
 // Packages we'll (eventually) be installing via `apt-get`
 var packages = [
-  'apache2',
-  'apache2-mpm-worker',
-  'php5-fpm',
-  'php5-cli',
-  'php5-phalcon',
-  'php5-mysql',
-  'git'
+    'apache2',
+    'apache2-mpm-worker',
+    'php5-fpm',
+    'php5-cli',
+    'php5-phalcon',
+    'php5-mysql',
+    'git'
 ];
 
 var paths = {
-  config: './config',
-  dist: './dist',
-  src: './src'
+    config: './config',
+    dist: './dist',
+    src: './src'
 };
 
 ///// paths.targetsConfig = `${path.relative(process.cwd(), paths.config)}/targets`;
 paths.targetsConfig = '' + paths.config + '/targets';
 
 try {
-  var targets = fs.readdirSync(paths.targetsConfig)
+    var targets = fs.readdirSync(paths.targetsConfig)
 
-    // Get a list of JSON files
-    .filter(function(file) {
-      return path.extname(file) === '.json';
-    })
+        // Get a list of JSON files
+        .filter(function(file) {
+            return path.extname(file) === '.json';
+        })
 
-    // Return an array of the JSON objects
-    .map(function(file) {
-      return fs.readJsonSync('' + paths.config + '/targets/' + file + '');
-    });
+        // Return an array of the JSON objects
+        .map(function(file) {
+            return fs.readJsonSync('' + paths.config + '/targets/' + file + '');
+        });
 } catch (e) {
-  console.log('Error: ', e);
-  process.exit(1);
+    console.log('Error: ', e);
+    process.exit(1);
 }
 
 console.log('[TARGETS]', EOL, targets, EOL);

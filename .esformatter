@@ -1,4 +1,7 @@
 {
+  "indent": {
+    "value": "    "
+  },
   "plugins": [
     "esformatter-quotes"
   ],
